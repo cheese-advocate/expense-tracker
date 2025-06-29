@@ -34,7 +34,13 @@
                     <g:form resource="${this.transaction}" method="PUT">
                         <g:hiddenField name="version" value="${this.transaction?.version}" />
                         <fieldset class="form">
-                            <f:all bean="transaction"/>
+                            <f:field bean="transaction" property="user"/>
+                            <f:field bean="transaction" property="description"/>
+                            <f:field bean="transaction" property="amountZAR"/>
+                            <div class="fieldcontain">
+                                <label for="runningBalanceZAR">Running Balance (ZAR)</label>
+                                <g:field name="runningBalanceZAR" value="${transaction?.runningBalanceZAR}" readonly="true" disabled="true"/>
+                            </div>
                         </fieldset>
                         <fieldset class="buttons">
                             <input class="save" type="submit" value="${message(code: 'default.button.update.label', default: 'Update')}" />

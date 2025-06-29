@@ -32,7 +32,13 @@
                     </g:hasErrors>
                     <g:form resource="${this.transaction}" method="POST">
                         <fieldset class="form">
-                            <f:all bean="transaction"/>
+                            <f:field bean="transaction" property="user"/>
+                            <f:field bean="transaction" property="description"/>
+                            <f:field bean="transaction" property="amountZAR"/>
+                            <div class="fieldcontain">
+                                <label for="runningBalanceZAR">Running Balance (ZAR)</label>
+                                <g:field name="runningBalanceZAR" value="${transaction?.runningBalanceZAR}" readonly="true" disabled="true"/>
+                            </div>
                         </fieldset>
                         <fieldset class="buttons">
                             <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />

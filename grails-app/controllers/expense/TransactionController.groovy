@@ -2,6 +2,7 @@ package expense
 
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
+import org.springframework.http.MediaType
 
 class TransactionController {
 
@@ -11,7 +12,9 @@ class TransactionController {
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond transactionService.list(params), model:[transactionCount: transactionService.count()]
+        List<Map> txListWithUsd = transactionService.list(params)
+        respond txListWithUsd, model: [transactionCount: transactionService.count(), txListWithUsd: txListWithUsd]
+        // respond transactionService.list(params), model:[transactionCount: transactionService.count()]
     }
 
     def show(Long id) {
@@ -85,6 +88,25 @@ class TransactionController {
             }
             '*'{ render status: NO_CONTENT }
         }
+    }
+
+    /**
+     * User must be able to export all their transactions to CSV file
+     * Exports all transactions to a CSV file.
+     * The CSV will include all transactions, or can be filtered based on parameters.
+     */
+    def exportCsv() {
+        // Get all transactions (or apply filters as needed)
+        List<Transaction> transactions = transactionService.list([max: Integer.MAX_VALUE])
+
+        response.setContentType("text/csv")
+        response.setHeader("Content-disposition", "attachment; filename=transactions.csv")
+        response.characterEncoding = "UTF-8"
+
+        // Write CSV to response output stream
+        transactionService.exportToCsv(transactions, response.outputStream)
+
+        response.outputStream.flush()
     }
 
     protected void notFound() {

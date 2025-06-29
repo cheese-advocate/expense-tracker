@@ -11,3 +11,4 @@ out/
 .settings
 .classpath
 application-secrets.yml
+.vscode/settings.json
