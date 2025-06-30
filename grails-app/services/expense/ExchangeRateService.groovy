@@ -14,7 +14,7 @@ class ExchangeRateService implements GrailsApplicationAware, InitializingBean {
 
     GrailsApplication grailsApplication
     String apiKey
-    BigDecimal fallbackRate = 0.55G
+    BigDecimal fallbackRate = 0.055G
 
     private BigDecimal cachedRate
     private Date lastFetchTime
@@ -26,8 +26,19 @@ class ExchangeRateService implements GrailsApplicationAware, InitializingBean {
     }
 
     void afterPropertiesSet() {
-        apiKey = System.getenv('fixer_io_api_key') ?:
-                 grailsApplication?.config?.getProperty('api.fixer_io_api_key', String)
+        apiKey = System.getProperty('fixer.api.key') ?:
+                System.getenv('fixer_api_key') ?:
+                grailsApplication?.config?.getProperty('fixer.api.key', String)
+
+        println "grailsApplication config raw: ${grailsApplication?.config}"
+        println "fixer.api.key from config: " + grailsApplication?.config?.getProperty('fixer.api.key', String)
+
+        println "Fixer.io API Key source: " + (
+            System.getProperty('fixer.api.key') ? "JVM arg" :
+            System.getenv('fixer_api_key') ? "env var" :
+            grailsApplication?.config?.getProperty('fixer.api.key') ? "config file" :
+            "none"
+        )
     }
 
     BigDecimal getZARtoUSD(BigDecimal amountZAR) {

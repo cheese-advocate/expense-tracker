@@ -16,7 +16,11 @@ class TransactionService {
     ExchangeRateService exchangeRateService
 
     Transaction get(Serializable id) {
-        Transaction.get(id)
+        def tx = Transaction.get(id)
+        if (tx != null) {
+            tx.exchangeRateService = this.exchangeRateService
+        }
+        return tx
     }
 
     /**
@@ -27,10 +31,11 @@ class TransactionService {
         List<Transaction> transactions = Transaction.list(params)
 
         transactions.collect { tx ->
+            tx.exchangeRateService = this.exchangeRateService // Inject the exchange rate service into each transaction
             [
                 transaction: tx,
-                amountUSD: exchangeRateService.getZARtoUSD(tx.amountZAR),
-                runningBalanceUSD: exchangeRateService.getZARtoUSD(tx.runningBalanceZAR)
+                amountUSD: tx.amountUSD,
+                runningBalanceUSD: tx.runningBalanceUSD
             ]
         }
     }
@@ -67,7 +72,7 @@ class TransactionService {
         transaction.save(flush: true, failOnError: true)
     }
 
-    void exportToCsv(List<Transaction> transactions, OutputStream outputStream) {
+    void exportToCsv(List<Map> transactions, OutputStream outputStream) {
         def formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
                                         .withZone(ZoneId.systemDefault())
 
@@ -78,13 +83,14 @@ class TransactionService {
             )
 
             transactions.each { tx ->
-                String userName = tx.user?.name?.replaceAll(/"/, '""') ?: ''
-                String description = (tx.description ?: '').replaceAll(/"/, '""')
-                String dateCreated = tx.dateCreated ? formatter.format(tx.dateCreated.toInstant()) : ''
+                def transaction = tx.transaction
+                String userName = transaction.user?.name?.replaceAll(/"/, '""') ?: ''
+                String description = (transaction.description ?: '').replaceAll(/"/, '""')
+                String dateCreated = transaction.dateCreated ? formatter.format(transaction.dateCreated.toInstant()) : ''
                 String amountUSD = tx.amountUSD?.setScale(2, BigDecimal.ROUND_HALF_UP)
                 String balanceUSD = tx.runningBalanceUSD?.setScale(2, BigDecimal.ROUND_HALF_UP)
-                String amountZAR = tx.amountZAR?.setScale(2, BigDecimal.ROUND_HALF_UP)
-                String runningBalanceZAR = tx.runningBalanceZAR?.setScale(2, BigDecimal.ROUND_HALF_UP)
+                String amountZAR = transaction.amountZAR?.setScale(2, BigDecimal.ROUND_HALF_UP)
+                String runningBalanceZAR = transaction.runningBalanceZAR?.setScale(2, BigDecimal.ROUND_HALF_UP)
 
                 writer.write(
                     "\"${userName}\",\"${description}\"," +

@@ -25,19 +25,15 @@ class Transaction {
     def exchangeRateService
 
     BigDecimal getAmountUSD() {
-        exchangeRateService?.convertZARtoUSD(amountZAR) ?: 0.0G
+        exchangeRateService?.getZARtoUSD(amountZAR) ?: 0.0G
     }
 
     BigDecimal getRunningBalanceUSD() {
-        exchangeRateService?.convertZARtoUSD(runningBalanceZAR) ?: 0.0G
+        exchangeRateService?.getZARtoUSD(runningBalanceZAR) ?: 0.0G
     }
 
-    // String getFormattedDateCreated() {
-    //     dateCreated ? dateCreated.format('yyyy-MM-dd HH:mm') : ''
-    // }
 
-
-    // String toString() {
-    //     return "${description ?: 'New Transaction'} - ZAR ${amountZAR ?: '0.00'}"
-    // }
+    String toString() {
+        return "${description ?: 'New Transaction'} - ZAR ${amountZAR ?: '0.00'}"
+    }
 }

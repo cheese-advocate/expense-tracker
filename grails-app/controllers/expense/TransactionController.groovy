@@ -13,8 +13,11 @@ class TransactionController {
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         List<Map> txListWithUsd = transactionService.list(params)
-        respond txListWithUsd, model: [transactionCount: transactionService.count(), txListWithUsd: txListWithUsd]
-        // respond transactionService.list(params), model:[transactionCount: transactionService.count()]
+        render view: 'index', model: [
+            txListWithUsd: txListWithUsd,
+            transactionCount: transactionService.count()
+        ]
+
     }
 
     def show(Long id) {
@@ -97,7 +100,7 @@ class TransactionController {
      */
     def exportCsv() {
         // Get all transactions (or apply filters as needed)
-        List<Transaction> transactions = transactionService.list([max: Integer.MAX_VALUE])
+        List<Map> transactions = transactionService.list([max: Integer.MAX_VALUE])
 
         response.setContentType("text/csv")
         response.setHeader("Content-disposition", "attachment; filename=transactions.csv")

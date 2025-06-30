@@ -36,8 +36,6 @@
                             <th><g:message code="transaction.runningBalanceUSD.label" default="Running Balance (ZAR)"/></th>
                             <th><g:message code="transaction.dateCreated.label" default="Date Created"/></th>
                             <th><g:message code="default.actions.label" default="Actions"/></th>
-                            <th>Amount (USD)</th>
-                            <th>Running Balance (USD)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,8 +45,8 @@
                                 <td>${entry.transaction.description}</td>
                                 <td>${entry.transaction.amountZAR?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
                                 <td>${entry.transaction.runningBalanceZAR?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
-                                <td>${entry.transaction.amountUSD?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
-                                <td>${entry.transaction.runningBalanceUSD?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
+                                <td>${entry.amountUSD?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
+                                <td>${entry.runningBalanceUSD?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
                                 <td><g:formatDate date="${entry.transaction.dateCreated}" format="yyyy-MM-dd HH:mm"/></td>
                                 <td>
                                     <g:link action="show" resource="${entry.transaction}">Show</g:link> |
