@@ -14,6 +14,7 @@
                     <ul>
                         <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
                         <li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
+                        <li><g:link action="exportCsv" class="export-csv-btn">Export to CSV</g:link></li>
                     </ul>
                 </div>
             </section>
@@ -23,7 +24,38 @@
                     <g:if test="${flash.message}">
                         <div class="message" role="status">${flash.message}</div>
                     </g:if>
-                    <f:table collection="${transactionList}" />
+                    <!-- <f:table collection="${transactionList}" /> -->
+                    <table>
+                        <thead>
+                            <tr>
+                            <th><g:message code="transaction.user.label" default="User"/></th>
+                            <th><g:message code="transaction.description.label" default="Description"/></th>
+                            <th><g:message code="transaction.amountZAR.label" default="Amount (ZAR)"/></th>
+                            <th><g:message code="transaction.runningBalanceZAR.label" default="Running Balance (ZAR)"/></th>
+                            <th><g:message code="transaction.amountUSD.label" default="Amount (ZAR)"/></th>
+                            <th><g:message code="transaction.runningBalanceUSD.label" default="Running Balance (ZAR)"/></th>
+                            <th><g:message code="transaction.dateCreated.label" default="Date Created"/></th>
+                            <th><g:message code="default.actions.label" default="Actions"/></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <g:each in="${txListWithUsd}" var="entry">
+                            <tr>
+                                <td>${entry.transaction.user?.name}</td>
+                                <td>${entry.transaction.description}</td>
+                                <td>${entry.transaction.amountZAR?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
+                                <td>${entry.transaction.runningBalanceZAR?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
+                                <td>${entry.amountUSD?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
+                                <td>${entry.runningBalanceUSD?.setScale(2, BigDecimal.ROUND_HALF_UP)}</td>
+                                <td><g:formatDate date="${entry.transaction.dateCreated}" format="yyyy-MM-dd HH:mm"/></td>
+                                <td>
+                                    <g:link action="show" resource="${entry.transaction}">Show</g:link> |
+                                    <g:link action="edit" resource="${entry.transaction}">Edit</g:link>
+                                </td>
+                            </tr>
+                            </g:each>
+                        </tbody>
+                    </table>
 
                     <g:if test="${transactionCount > params.int('max')}">
                     <div class="pagination">

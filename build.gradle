@@ -78,6 +78,7 @@ dependencies {
 }
 
 bootRun {
+    mainClass.set("test.Application")
     ignoreExitValue true
     jvmArgs(
         '-Dspring.output.ansi.enabled=always', 
@@ -87,6 +88,7 @@ bootRun {
     sourceResources sourceSets.main
     String springProfilesActive = 'spring.profiles.active'
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
+    systemProperty 'fixer.api.key', System.getProperty('fixer.api.key')
 }
 
 tasks.withType(GroovyCompile) {

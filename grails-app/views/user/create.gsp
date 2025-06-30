@@ -32,7 +32,8 @@
                     </g:hasErrors>
                     <g:form resource="${this.user}" method="POST">
                         <fieldset class="form">
-                            <f:all bean="user"/>
+                            <f:field bean="user" property="name"/>
+                            <f:field bean="user" property="startingBalanceZAR" type="number" step="0.01" min="0"/>
                         </fieldset>
                         <fieldset class="buttons">
                             <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
