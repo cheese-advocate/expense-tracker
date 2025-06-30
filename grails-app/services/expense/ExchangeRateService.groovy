@@ -29,16 +29,21 @@ class ExchangeRateService implements GrailsApplicationAware, InitializingBean {
         apiKey = System.getProperty('fixer.api.key') ?:
                 System.getenv('fixer_api_key') ?:
                 grailsApplication?.config?.getProperty('fixer.api.key', String)
-
-        println "grailsApplication config raw: ${grailsApplication?.config}"
-        println "fixer.api.key from config: " + grailsApplication?.config?.getProperty('fixer.api.key', String)
-
-        println "Fixer.io API Key source: " + (
-            System.getProperty('fixer.api.key') ? "JVM arg" :
-            System.getenv('fixer_api_key') ? "env var" :
-            grailsApplication?.config?.getProperty('fixer.api.key') ? "config file" :
-            "none"
-        )
+        if (!apiKey) {
+            // Try manual loading as fallback
+            def propsFile = new File('secrets.properties')
+            if (propsFile.exists()) {
+                def props = new Properties()
+                propsFile.withInputStream { stream -> props.load(stream) }
+                apiKey = props.getProperty('fixer.api.key')
+            }
+        }
+        if (!apiKey) {
+            log.warn("Fixer.io API key not configured. Using fallback rate of ${fallbackRate}")
+            println "Fixer.io API key not configured. Using fallback rate of ${fallbackRate}"
+            cachedRate = fallbackRate
+            lastFetchTime = new Date()
+        }
     }
 
     BigDecimal getZARtoUSD(BigDecimal amountZAR) {
