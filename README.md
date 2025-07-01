@@ -11,7 +11,8 @@
 - [Installation](#installation)  
 - [Configuration](#configuration)  
 - [Running the Application](#running-the-application)  
-- [Usage](#usage)  
+- [Usage](#usage)
+- [Optimisations at Scale](#optimisations-at-scale)
 - [License](#license)
 
 ---
@@ -54,7 +55,7 @@ cd expense-tracker
 
 The Fixer.io API key for USD conversion is optional.
 
-There are two ways to provide it:
+There are two ways to provide it (if not as a Gradle bootRun arg):
 
 ### 1. Environment Variable
 
@@ -98,6 +99,23 @@ Or with Gradle (including optional API key):
 - View running ZAR and USD balances  
 - Export transaction data as CSV  
 - No login or authentication is required  
+
+---
+
+## Optimisations at Scale
+
+The current application is currently built for local or small-scale use. With that said, possible optimisations to support 10k users using the system concurrently among others are listed below:
+
+- GORM optimisations (eg. indexing, pagination, minimising query complexity).
+- Using a more scalable RDBMS solution such as MySQL or PostGreSQL for database interactions.
+- Pooling database and API connections to reduce overhead from transactions and API calls.
+- Decoupling CRUD transactions from non-time-critical transient API calls to reduce backend load and allow for asynchronous computing, or even queueing for non-time-critical operations.
+- Adding caching for optimising reads which can be eventually consistent from the database.
+- Containerising the server and orchestrating the containers (eg. Kubernetes) for scaling available server instances.
+- Deploying behind a load balancer with sticky sessions to spread traffic between backend instances.
+- Implementing profiling and monitoring tools (eg. Prometheus) to track performance and system health under load.
+
+As an additional note, optimising the frontend for improved user experience would also be a consideration, such as for improved information filtering and handling in tables, for example.
 
 ---
 
