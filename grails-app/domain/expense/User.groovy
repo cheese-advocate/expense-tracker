@@ -1,7 +1,8 @@
+package expense
+
 import groovy.transform.ToString
 import expense.Transaction
 
-@ToString(includeNames = true, includeFields = true)
 class User {
     String name
     BigDecimal startingBalanceZAR
