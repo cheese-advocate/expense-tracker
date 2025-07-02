@@ -11,6 +11,7 @@
 - [Installation](#installation)  
 - [Configuration](#configuration)  
 - [Running the Application](#running-the-application)  
+- [Testing the Application](#testing-the-application)  
 - [Usage](#usage)
 - [Optimisations at Scale](#optimisations-at-scale)
 - [License](#license)
@@ -87,6 +88,16 @@ Or with Gradle (including optional API key):
 
 ```bash
 ./gradlew bootRun -Dfixer.api.key=yourapikeyhere
+```
+
+---
+
+## Testing the Application
+
+Run with Gradle:
+
+```bash
+./gradlew test
 ```
 
 ---
